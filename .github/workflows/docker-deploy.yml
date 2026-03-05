@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ACR_NAME: ${{ secrets.ACR_NAME }}
     outputs:
       image_name: ${{ steps.set-vars.outputs.IMAGE_NAME }} # Expose the variable
     steps:
@@ -29,6 +31,7 @@ jobs:
       # 3️⃣ Set variables
       # -----------------------
       - name: Set variables
+        id: set-vars 
         run: |
           ACR_NAME="dk8sdemo"
           IMG="$ACR_NAME.azurecr.io/dockerdemo:${{ github.sha }}"
@@ -48,7 +51,7 @@ jobs:
       - name: Push to ACR
         run: |
           echo "Logging in to ACR..."
-          az acr login --name $ACR_NAME
+          az acr login --name "$ACR_NAME"
           docker push $IMAGE_NAME
 
   deploy:
