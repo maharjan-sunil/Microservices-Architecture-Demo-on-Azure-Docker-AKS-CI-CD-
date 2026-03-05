@@ -23,9 +23,14 @@ namespace DockerDemo.Docker.Service
             await _context.SaveChangesAsync();
         }
 
-        public Task DeleteStore(int id)
+        public async Task DeleteStore(int id)
         {
-            throw new NotImplementedException();
+            var store = await _context.Stores.FindAsync(id);
+            if (store != null)
+            {
+                _context.Stores.Remove(store);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<ActionResult<IEnumerable<Store>>> GetStores()

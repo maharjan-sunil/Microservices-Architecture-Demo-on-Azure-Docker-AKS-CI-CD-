@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockerdemo-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockerdemo-api
+  template:
+    metadata:
+      labels:
+        app: dockerdemo-api
+    spec:
+      containers:
+      - name: dockerdemo-api
+        image: dk8sdemo.azurecr.io/dockerdemo:1.0
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockerdemo-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: dockerdemo-api
+  ports:
+    - port: 80
+      targetPort: 8080

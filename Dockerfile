@@ -2,11 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY *.csproj .
+COPY DockerDemo.csproj ./
 RUN dotnet restore
 
-COPY . .
-RUN dotnet publish -c Release -o out
+
+COPY . ./
+RUN dotnet publish DockerDemo.csproj -c Release -o /app/out
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
