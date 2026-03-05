@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  annotations:
+    # Use the modern ingress-class field if possible, otherwise keep the annotation
+    kubernetes.io/ingress.class: nginx
+    # This "strips" /service1 so your app receives just "/"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: demo.local
+    http:
+      paths:
+      - path: /              # <--- ADDED: This makes http://demo.local work
+        pathType: Prefix
+        backend:
+          service:
+            name: dockerdemo-service # This service will be your "Home" page
+            port:
+              number: 80
+      - path: /service1
+        pathType: Prefix
+        backend:
+          service:
+            name: dockerdemo-service
+            port:
+              number: 80
+      

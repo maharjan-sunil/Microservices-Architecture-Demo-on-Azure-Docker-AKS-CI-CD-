@@ -29,6 +29,14 @@ namespace DockerDemo.Docker.Controller
                 
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteStore(int id)
+        {
+            await _service.DeleteStore(id);
+            return Ok();
+
+        }
+
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Store>>> GetStoreByName(String storeName)
         {
