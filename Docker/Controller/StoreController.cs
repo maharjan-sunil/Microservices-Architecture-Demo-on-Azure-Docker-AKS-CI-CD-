@@ -1,5 +1,6 @@
 ﻿using DockerDemo.Docker.Interface;
 using DockerDemo.Docker.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DockerDemo.Docker.Controller
@@ -21,7 +22,10 @@ namespace DockerDemo.Docker.Controller
             return await _service.GetStores();
         }
 
+       
         [HttpPost]
+        [Authorize]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddStore(Store store)
         {
             await _service.AddStore(store);
@@ -30,6 +34,7 @@ namespace DockerDemo.Docker.Controller
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteStore(int id)
         {
             await _service.DeleteStore(id);
@@ -37,6 +42,7 @@ namespace DockerDemo.Docker.Controller
 
         }
 
+        //[Authorize(Policy = "ReadAccess")]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Store>>> GetStoreByName(String storeName)
         {
