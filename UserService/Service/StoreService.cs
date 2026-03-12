@@ -4,6 +4,7 @@ using DockerDemo.Docker.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DockerDemo.Docker.Service
 {
@@ -53,10 +54,43 @@ namespace DockerDemo.Docker.Service
                 .ToListAsync();
         }
 
-        public Task UpdateStore(Store store)
+        public async Task<ActionResult<IEnumerable<Store>>> UpdateStore(Store store)
         {
-            throw new NotImplementedException();
+
+
+            var storeDetail = await _context.Stores.FindAsync(store.Id);
+
+            // if (storeDetail == null)
+            // {
+            //   //  return NotFound($"Store with ID {store.Id} not found.");
+            // }
+
+
+            storeDetail.Name = store.Name;
+            storeDetail.Email = store.Email;
+
+
+            // // Mark the entity as modified and save
+            // _context.Entry(store).State = EntityState.Modified;
+
+            //// try
+            // //{
+            await _context.SaveChangesAsync();
+            return await _context.Stores
+                .Where(s => s.Id.Equals(store.Id))
+                .ToListAsync();
+            // return OK(storeDetail);
+            // //}
+            // //catch (DbUpdateConcurrencyException)
+            // // {
+            // //    return Conflict("The store was updated by another user.");
+            // //}
+
         }
 
+        Task IStoreService.UpdateStore(Store store)
+        {
+            return UpdateStore(store);
+        }
     }
 }
