@@ -7,7 +7,7 @@ RUN dotnet restore
 
 
 COPY . ./
-RUN dotnet publish DockerDemo.csproj -c Release -o /app/out
+RUN dotnet publish UserService.API.csproj -c Release -o /app/out
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
