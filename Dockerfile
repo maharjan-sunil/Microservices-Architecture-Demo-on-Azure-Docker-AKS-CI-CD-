@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-COPY DockerDemo.csproj ./
+COPY UserService.API.csproj ./
 RUN dotnet restore
 
 
