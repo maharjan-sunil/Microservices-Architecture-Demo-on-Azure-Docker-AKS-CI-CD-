@@ -17,5 +17,5 @@ COPY --from=build /app/out .
 
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "DockerDemo.dll"]
+ENTRYPOINT ["dotnet", "UserService.API.dll"]
 # the container port can be same but the host should have different port
