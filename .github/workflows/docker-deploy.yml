@@ -84,9 +84,15 @@ jobs:
             --resource-group Dockerdemo_group \
             --name dockerdk8s \
             --overwrite-existing
+      # -----------------------
+      # 4️⃣ Create or Update Resources (Add this step!)
+      # -----------------------
+      - name: Deploy Manifests
+        run: |
+          kubectl apply -f k8s/deployment.yaml
 
       # -----------------------
-      # 4️⃣ Update image in Deployment YAML
+      #  Update image in Deployment YAML
       # -----------------------
       - name: Update image in deployment.yaml
         run: |
