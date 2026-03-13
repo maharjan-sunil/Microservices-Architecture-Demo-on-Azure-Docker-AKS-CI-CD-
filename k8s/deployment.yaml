@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: dockerdemo-api
-        image: IMAGE_PLACEHOLDER
+        image: image_placeholder
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
