@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: dockerdemo-api
-        image: image_placeholder
+        image: dk8sdemo.azurecr.io/dockerdemo:986d164ee6e99f7eeda698fc8d229e3260e39e39
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
