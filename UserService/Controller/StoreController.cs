@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DockerDemo.Docker.Controller
 {
-    [Authorize]
+   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StoreController : ControllerBase
@@ -24,7 +24,7 @@ namespace DockerDemo.Docker.Controller
         }
        
         [HttpPost]
-       
+        [Authorize]
         public async Task<IActionResult> AddStore(Store store)
         {
             await _service.AddStore(store);
@@ -33,6 +33,7 @@ namespace DockerDemo.Docker.Controller
         }
 
         [HttpPatch]
+        [Authorize]
         public async Task<IActionResult> UpdateStore(Store store)
         {
             await _service.UpdateStore(store);
@@ -41,7 +42,7 @@ namespace DockerDemo.Docker.Controller
         }
 
         [HttpDelete]
-        [Authorize(Roles = "API.ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteStore(int id)
         {
             await _service.DeleteStore(id);
@@ -49,6 +50,7 @@ namespace DockerDemo.Docker.Controller
 
         }
 
+       
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Store>>> GetStoreByName(String storeName)
         {
