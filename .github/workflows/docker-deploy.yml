@@ -9,7 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      ACR_NAME: ${{ secrets.ACR_NAME }}
+      ACR_NAME: ${{ secrets.ACR_NAME }}     
+      AZUREAD__INSTANCE: ${{ secrets.AZUREAD_INSTANCE }}
+      AZUREAD__DOMAIN: ${{ secrets.AZUREAD__DOMAIN }} 
+      AZUREAD__CLIENTID: ${{ secrets.AZUREAD_CLIENTID }}
+      AZUREAD__CLIENTSECRET: ${{ secrets.AZUREAD_CLIENTSECRET }}
+      AZUREAD__TENANTID: ${{ secrets.AZUREAD_TENANTID }}
+      AZUREAD__CALLBACKPATH: ${{ secrets.AZUREAD__CALLBACKPATH }}
     outputs:
       image_name: ${{ steps.set-vars.outputs.IMAGE_NAME }} # Expose the variable
     steps:
