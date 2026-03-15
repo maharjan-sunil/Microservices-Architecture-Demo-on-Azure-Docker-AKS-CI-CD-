@@ -22,7 +22,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 builder.Configuration["AzureAd:ClientId"],
                 builder.Configuration["AzureAd:ClientIds"]
             },
-            ValidateIssuer = true,
+            ValidateIssuer = false,
             ValidIssuers = new[]
             {
                 $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0",
