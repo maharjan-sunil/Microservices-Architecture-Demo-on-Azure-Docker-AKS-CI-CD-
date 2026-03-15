@@ -16,13 +16,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             // Add both the Client ID and the App ID URI here
+            ValidateAudience = true,
             ValidAudiences = new[]
             {
                 builder.Configuration["AzureAd:ClientId"],
                 builder.Configuration["AzureAd:ClientIds"]
             },
-            ValidateAudience = true,
-            ValidateIssuer = true
+            ValidateIssuer = true,
+            ValidIssuers = new[]
+            {
+                $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0",
+                $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0/", // With slash
+                $"https://sts.windows.net/{builder.Configuration["AzureAd:TenantId"]}/" // The v1 version just in case
+            }
         };
         //options.Audience = builder.Configuration["AzureAd:ClientId"];
     });
@@ -33,7 +39,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //integration of db in the application
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    sqlOptions =>
+    {
+        // Enables automatic retries for transient failures
+        sqlOptions.EnableRetryOnFailure(
+        maxRetryCount: 5,           // Maximum number of retry attempts
+        maxRetryDelay: TimeSpan.FromSeconds(30), // Max delay between retries
+        errorNumbersToAdd: null     // Additional SQL error codes to retry on
+    );
+    }));
 
 builder.Services.AddControllers();
 
