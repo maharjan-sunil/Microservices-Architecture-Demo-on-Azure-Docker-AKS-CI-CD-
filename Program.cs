@@ -16,7 +16,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             // Add both the Client ID and the App ID URI here
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidAudiences = new[]
             {
                 builder.Configuration["AzureAd:ClientId"],
