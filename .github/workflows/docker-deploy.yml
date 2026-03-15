@@ -9,7 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      ACR_NAME: ${{ secrets.ACR_NAME }}
+      ACR_NAME: ${{ secrets.ACR_NAME }}     
+      AZUREAD__INSTANCE: ${{ secrets.AZUREAD_INSTANCE }}
+      AZUREAD__DOMAIN: ${{ secrets.AZUREAD__DOMAIN }} 
+      AZUREAD__CLIENTID: ${{ secrets.AZUREAD_CLIENTID }}
+      AZUREAD__CLIENTSECRET: ${{ secrets.AZUREAD_CLIENTSECRET }}
+      AZUREAD__TENANTID: ${{ secrets.AZUREAD_TENANTID }}
+      AZUREAD__CALLBACKPATH: ${{ secrets.AZUREAD_CALLBACKPATH }}
     outputs:
       image_name: ${{ steps.set-vars.outputs.IMAGE_NAME }} # Expose the variable
     steps:
@@ -84,18 +90,22 @@ jobs:
             --resource-group Dockerdemo_group \
             --name dockerdk8s \
             --overwrite-existing
+      # -----------------------
+      # 4️⃣ Create or Update Resources (Add this step!)
+      # -----------------------
+      - name: Deploy Manifests
+        run: |
+          kubectl apply -f k8s/deployment.yaml
 
       # -----------------------
-      # 4️⃣ Update image in Deployment YAML
+      #  Update image in Deployment YAML
       # -----------------------
       - name: Update image in deployment.yaml
         run: |
-          # Now $IMAGE_NAME will have the correct value
-          sed -i "s|image: .*|image: $IMAGE_NAME|g" k8s/deployment.yaml
+          kubectl set image deployment/dockerdemo-api \
+          dockerdemo-api=$IMAGE_NAME
 
-      # -----------------------
-      # 5️⃣ Apply Kubernetes manifests
-      # -----------------------
-      - name: Deploy to AKS
+      # 5️⃣ Verify rollout
+      - name: Verify deployment rollout
         run: |
-          kubectl apply -f k8s/
+          kubectl rollout status deployment/dockerdemo-api --timeout=120s

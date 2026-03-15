@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: dockerdemo-api
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: dockerdemo-api
@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: dockerdemo-api
-        image: dk8sdemo.azurecr.io/dockerdemo:1.0
+        image: place_holder
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
 ---

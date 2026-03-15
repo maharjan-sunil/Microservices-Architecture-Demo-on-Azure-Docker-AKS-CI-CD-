@@ -2,6 +2,7 @@ using DockerDemo.Data;
 using DockerDemo.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 
@@ -12,7 +13,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0";
-        options.Audience = builder.Configuration["AzureAd:ClientId"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            // Add both the Client ID and the App ID URI here
+            ValidAudiences = new[]
+            {
+                builder.Configuration["AzureAd:ClientId"],
+                builder.Configuration["AzureAd:ClientIds"]
+            },
+            ValidateAudience = true,
+            ValidateIssuer = true
+        };
+        //options.Audience = builder.Configuration["AzureAd:ClientId"];
     });
 
 // Add services to the container.
@@ -28,6 +40,7 @@ builder.Services.AddControllers();
 //This registers authorization services in the dependency injection container.
 builder.Services.AddAuthorization();
 
+//to make git detect changes
 
 // swagger service 
 builder.Services.AddEndpointsApiExplorer();
