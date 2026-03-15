@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DockerDemo.Docker.Controller
 {
-   [Authorize]
+   //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StoreController : ControllerBase
@@ -52,6 +52,7 @@ namespace DockerDemo.Docker.Controller
 
        
         [HttpGet("search")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Store>>> GetStoreByName(String storeName)
         {
             return await _service.GetStoreByName(storeName);
