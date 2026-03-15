@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DockerDemo.Docker.Controller
 {
-   [Authorize]
+  // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StoreController : ControllerBase
