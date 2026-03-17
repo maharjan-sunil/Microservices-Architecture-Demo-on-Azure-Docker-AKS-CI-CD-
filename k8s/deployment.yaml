@@ -20,13 +20,13 @@ spec:
         - containerPort: 8080
         env:
         - name: AzureAd__TenantId
-          value: "8b429d1a-74b0-4d77-8bc0-46497daeee71"
+          value: "${AZUREAD__TENANTID}"
         - name: AzureAd__ClientId
-          value: "e1709cbf-5ac7-45dd-b932-736744fcb4d0"
+          value: "${AZUREAD__CLIENTID}"
         - name: AzureAd__Instance
           value: "https://login.microsoftonline.com/"
-        # - name: ConnectionStrings__DefaultConnection
-        #   value: "${DB_CONNECTIONSTRING}"      
+        - name: ConnectionStrings__DefaultConnection
+          value: "${ConnectionStrings__DefaultConnection}"      
 ---
 apiVersion: v1
 kind: Service
