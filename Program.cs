@@ -2,7 +2,6 @@ using DockerDemo.Data;
 using DockerDemo.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 
@@ -13,18 +12,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0";
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            // Add both the Client ID and the App ID URI here
-            ValidAudiences = new[]
-            {
-                builder.Configuration["AzureAd:ClientId"],
-                builder.Configuration["AzureAd:ClientIds"]
-            },
-            ValidateAudience = true,
-            ValidateIssuer = true
-        };
-        //options.Audience = builder.Configuration["AzureAd:ClientId"];
+        //options.TokenValidationParameters = new TokenValidationParameters
+        //{
+        //    // Add both the Client ID and the App ID URI here
+        //    ValidateAudience = false,
+        //    ValidAudiences = new[]
+        //    {
+        //        builder.Configuration["AzureAd:ClientId"],
+        //        builder.Configuration["AzureAd:ClientIds"]
+        //    },
+        //    ValidateIssuer = false,
+        // Used this logic so that any version is allowed
+        //    ValidIssuers = new[]
+        //    {
+        //        $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0",
+        //        $"https://login.microsoftonline.com/{builder.Configuration["AzureAd:TenantId"]}/v2.0/", // With slash
+        //        $"https://sts.windows.net/{builder.Configuration["AzureAd:TenantId"]}/" // The v1 version just in case
+        //    }
+        //};
+        options.Audience = builder.Configuration["AzureAd:ClientId"];
+        //not sure about aud i am expecting aud with api as prefi but the micorsoft entra id is seding my with guid
+        //to match i have to update clientIds
     });
 
 // Add services to the container.
@@ -33,7 +41,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //integration of db in the application
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    sqlOptions =>
+    {
+        // Enables automatic retries for transient failures
+        sqlOptions.EnableRetryOnFailure(
+        maxRetryCount: 5,           // Maximum number of retry attempts
+        maxRetryDelay: TimeSpan.FromSeconds(30), // Max delay between retries
+        errorNumbersToAdd: null     // Additional SQL error codes to retry on
+    );
+    }));
 
 builder.Services.AddControllers();
 

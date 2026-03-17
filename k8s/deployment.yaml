@@ -18,6 +18,15 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        env:
+        - name: AzureAd__TenantId
+          value: "${AZUREAD__TENANTID}"
+        - name: AzureAd__ClientId
+          value: "${AZUREAD__CLIENTID}"
+        - name: AzureAd__Instance
+          value: "https://login.microsoftonline.com/"
+        - name: ConnectionStrings__DefaultConnection
+          value: "${ConnectionStrings__DefaultConnection}"      
 ---
 apiVersion: v1
 kind: Service

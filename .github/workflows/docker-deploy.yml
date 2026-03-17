@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACR_NAME: ${{ secrets.ACR_NAME }}     
-      AZUREAD__INSTANCE: ${{ secrets.AZUREAD_INSTANCE }}
-      AZUREAD__DOMAIN: ${{ secrets.AZUREAD__DOMAIN }} 
-      AZUREAD__CLIENTID: ${{ secrets.AZUREAD_CLIENTID }}
-      AZUREAD__CLIENTSECRET: ${{ secrets.AZUREAD_CLIENTSECRET }}
-      AZUREAD__TENANTID: ${{ secrets.AZUREAD_TENANTID }}
-      AZUREAD__CALLBACKPATH: ${{ secrets.AZUREAD_CALLBACKPATH }}
     outputs:
       image_name: ${{ steps.set-vars.outputs.IMAGE_NAME }} # Expose the variable
     steps:
@@ -94,8 +88,27 @@ jobs:
       # 4️⃣ Create or Update Resources (Add this step!)
       # -----------------------
       - name: Deploy Manifests
+        env:
+          AZUREAD__CLIENTID: ${{ secrets.AZUREAD_CLIENTID }}
+          AZUREAD__TENANTID: ${{ secrets.AZUREAD_TENANTID }}
+          ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
-          kubectl apply -f k8s/deployment.yaml
+          # Use single quotes around variables to prevent the shell 
+          # from trying to expand them before envsubst does.
+          envsubst '$AZUREAD__CLIENTID $AZUREAD__TENANTID $ConnectionStrings__DefaultConnection' < k8s/deployment.yaml | kubectl apply -f -
+
+      # - name: Deploy Manifests
+      #   env:
+      #     #AZUREAD__INSTANCE: ${{ secrets.AZUREAD_INSTANCE }}
+      #     #AZUREAD__DOMAIN: ${{ secrets.AZUREAD__DOMAIN }} 
+      #     AZUREAD__CLIENTID: ${{ secrets.AZUREAD_CLIENTID }}
+      #    # AZUREAD__CLIENTSECRET: ${{ secrets.AZUREAD_CLIENTSECRET }}
+      #     AZUREAD__TENANTID: ${{ secrets.AZUREAD_TENANTID }}
+      #   #  AZUREAD__CALLBACKPATH: ${{ secrets.AZUREAD_CALLBACKPATH }}
+      #   run: |
+      #     # It is safer to list the specific variables to substitute
+      #     # to avoid breaking other $ signs in your YAML.
+      #     envsubst '$AZUREAD__CLIENTID $AZUREAD__TENANTID' < k8s/deployment.yaml | kubectl apply -f -
 
       # -----------------------
       #  Update image in Deployment YAML
