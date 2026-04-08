@@ -24,7 +24,7 @@ namespace DockerDemo.Docker.Controller
         }
        
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> AddStore(Store store)
         {
             await _service.AddStore(store);
