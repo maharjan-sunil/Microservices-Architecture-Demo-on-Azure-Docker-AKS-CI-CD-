@@ -13,22 +13,23 @@ namespace DockerDemo.Docker.Service
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly AzureKey _key;
+        private readonly ILogger<StoreService> _logger;
+      //  private readonly AzureKey _key;
 
-        public StoreService(ApplicationDbContext context, AzureKey key)
+        public StoreService(ApplicationDbContext context, ILogger<StoreService> logger)
         {
             _context = context;
-            _key = key;
+        //    _key = key;
+            _logger = logger;
         }
 
         public async Task AddStore(Store store)
         {
-          
-            string encyrpted = await _key.Encrypt(store.Location);
-            //string decyrpted = await _key.Decrypt(encyrpted);
-            store.Location = encyrpted;
-            _context.Stores.Add(store);
-            await _context.SaveChangesAsync();
+                //   string encyrpted = await _key.Encrypt(store.Location);
+                //string decyrpted = await _key.Decrypt(encyrpted);
+                store.Location = store.Location;
+                _context.Stores.Add(store);
+                await _context.SaveChangesAsync();
         }
 
         public async Task DeleteStore(int id)

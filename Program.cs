@@ -3,10 +3,17 @@ using DockerDemo.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// for serilog
+Log.Logger  = new LoggerConfiguration()
+    //.WriteTo.Console()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 //adding authenication in system with azure active directory
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -95,10 +102,12 @@ builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 //This middleware checks and validates the token in the request.
 app.UseAuthentication();
 
-//This middleware enforces the [Authorize] attribute.
+//This middleware enforces the [Authorize] attribute. 
 app.UseAuthorization();
 
 //if (app.Environment.IsDevelopment())
