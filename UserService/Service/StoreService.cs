@@ -25,18 +25,11 @@ namespace DockerDemo.Docker.Service
 
         public async Task AddStore(Store store)
         {
-            try
-            {
                 //   string encyrpted = await _key.Encrypt(store.Location);
                 //string decyrpted = await _key.Decrypt(encyrpted);
                 store.Location = store.Location;
                 _context.Stores.Add(store);
-                _logger.LogInformation("Successfully added new store named {storeName}at {date}", store.Name, DateTime.Now);
                 await _context.SaveChangesAsync();
-            }catch(Exception ex)
-            {
-                _logger.LogError("Error {ex}", ex.Message);
-            }
         }
 
         public async Task DeleteStore(int id)

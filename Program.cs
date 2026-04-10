@@ -102,6 +102,8 @@ builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 //This middleware checks and validates the token in the request.
 app.UseAuthentication();
 
