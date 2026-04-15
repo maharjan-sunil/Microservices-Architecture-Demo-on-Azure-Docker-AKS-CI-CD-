@@ -2,6 +2,10 @@
 using DockerDemo.Docker.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
+using System.Text;
+using System.Text.Json;
+using UserService.API.RabbitMQ;
 
 namespace DockerDemo.Docker.Controller
 {
@@ -27,9 +31,26 @@ namespace DockerDemo.Docker.Controller
         //[Authorize]
         public async Task<IActionResult> AddStore(Store store)
         {
+            // 1. Save as Pending (simulate DB)
+            //store.StoreStatus = Status.Pending;
+            Console.WriteLine($"Initial set status to {Status.Pending}");
+
+            // 2. Send message to RabbitMQ
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+
+            channel.QueueDeclare("store-queue", true, false, false);
+
+            var message = JsonSerializer.Serialize(store);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            channel.BasicPublish("", "store-queue", null, body);
+
             await _service.AddStore(store);
             return Ok();
-                
+
         }
 
         [HttpPatch]

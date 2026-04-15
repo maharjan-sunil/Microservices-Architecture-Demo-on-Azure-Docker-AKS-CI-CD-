@@ -6,5 +6,14 @@
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+      //  public Status StoreStatus { get; set; }
+
+    }
+
+    public enum Status
+    {
+        Pending,
+        Active,
+        Deactivated
     }
 }
