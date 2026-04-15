@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using UserService.API.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +100,9 @@ builder.Services.AddSwaggerGen(options =>
 
 // to add all the DI 
 builder.Services.AddApplicationServices();
+
+//Consumer for Rabbit MQ
+builder.Services.AddHostedService<StoreConsumer>();
 
 var app = builder.Build();
 
